@@ -47,6 +47,16 @@ The `4-compare.sh` script lives in [d360-deploy-cli-pipeline](https://github.com
 - **UI deletions may not be detected** — when a field mapping is deleted in the Data Cloud UI, the metadata file often still comes back on retrieve due to a platform limitation. Verify deletions directly in Data Cloud Setup → Data Kits.
 - **`<externalDataTranField>` false positives** — stripped automatically by `diff_report.py` before diffing.
 
+## Dependencies
+
+This skill requires a pipeline repo based on [d360-deploy-cli-pipeline](https://github.com/everanngitmaker/d360-deploy-cli-pipeline). Your project repo must have:
+
+- `config/pipeline.config` — defines `ORG_BRANCH_MAP` and `PROMOTION_ORDER`
+- `scripts/4-compare.sh` — runs the diff
+- `manifests/` — contains your `package.xml` manifest(s) to scope the comparison
+
+Clone or copy from `d360-deploy-cli-pipeline` to get started.
+
 ## Installation
 
 This skill is part of the [my-skills](https://github.com/everanngitmaker) plugin collection. Copy the skill directory into your Claude Code skills folder:
