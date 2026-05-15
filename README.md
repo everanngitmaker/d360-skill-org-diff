@@ -34,8 +34,6 @@ Reports are scoped to the manifest(s) in `manifests/` so only relevant data kits
 
 ## Script
 
-The `4-compare.sh` script lives in [d360-deploy-cli-pipeline](https://github.com/everanngitmaker/d360-deploy-cli-pipeline) — use that repo to set up or copy the pipeline into your project.
-
 ```bash
 ./scripts/4-compare.sh org-vs-branch <org>              # manual org changes
 ./scripts/4-compare.sh org-vs-org <org-a> <org-b>       # environment backlog
