@@ -45,15 +45,23 @@ Reports are scoped to the manifest(s) in `manifests/` so only relevant data kits
 - **UI deletions may not be detected** — when a field mapping is deleted in the Data Cloud UI, the metadata file often still comes back on retrieve due to a platform limitation. Verify deletions directly in Data Cloud Setup → Data Kits.
 - **`<externalDataTranField>` false positives** — stripped automatically by `diff_report.py` before diffing.
 
-## Dependencies
+## What's bundled
 
-This skill requires a pipeline repo based on [d360-deploy-cli-pipeline](https://github.com/everanngitmaker/d360-deploy-cli-pipeline). Your project repo must have:
+The compare tooling ships with this skill — no external repo needed:
 
-- `config/pipeline.config` — defines `ORG_BRANCH_MAP` and `PROMOTION_ORDER`
-- `scripts/4-compare.sh` — runs the diff
-- `manifests/` — contains your `package.xml` manifest(s) to scope the comparison
+- `scripts/4-compare.sh` — runs the diff (all three modes)
+- `scripts/diff_report.py` — builds the HTML report; required by `4-compare.sh`
+- `config/pipeline.config` — template defining `ORG_BRANCH_MAP` and `PROMOTION_ORDER`
 
-Clone or copy from `d360-deploy-cli-pipeline` to get started.
+Your project repo also needs a `manifests/` folder holding your exported Data Kit `package.xml` (it scopes the comparison), and an `sfdx-project.json` at the root.
+
+## Requirements
+
+- **Salesforce CLI** (`sf`) — authenticated to each org you compare (`sf org list`)
+- **Git** — `org-vs-branch` and `branch-vs-branch` modes diff against branches
+- **Python 3** — for `diff_report.py` (standard library only, no pip installs)
+
+> This skill pairs with **[d360-deploy](https://github.com/everanngitmaker/d360-skill-deploy)**: when `3-deploy.sh` aborts on a real conflict, it points you to `4-compare.sh org-vs-branch` — the `org-vs-branch` mode here. Install both skills into the same project repo and the deploy → conflict → compare flow works end-to-end.
 
 ## Installation
 

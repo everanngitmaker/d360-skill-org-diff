@@ -1,12 +1,32 @@
 ---
 name: d360-org-diff
-description: Detect Data Cloud metadata drift between environments in the d360devops2 pipeline. Use this skill whenever the user wants to compare orgs against each other, compare an org against its git branch, or compare two git branches to see backlogged changes. Trigger on phrases like "check drift", "compare orgs", "what's different between dev and stage", "did anyone make manual changes to prod", "what's backlogged", "compare mysdo-dev to mysdo-stage", or any request to understand metadata differences between environments.
+description: Detect Data Cloud metadata drift between environments in a branch-per-org pipeline. Use this skill whenever the user wants to compare orgs against each other, compare an org against its git branch, or compare two git branches to see backlogged changes. Trigger on phrases like "check drift", "compare orgs", "what's different between dev and stage", "did anyone make manual changes to prod", "what's backlogged", "compare dev to stage org", or any request to understand metadata differences between environments.
 type: reference
 ---
 
 # D360 Org Diff
 
-A skill for detecting metadata drift in the d360devops2 pipeline. Three distinct comparisons answer three different questions — pick the right one before running anything.
+A skill for detecting metadata drift in a branch-per-org Data Cloud pipeline. Three distinct comparisons answer three different questions — pick the right one before running anything.
+
+The compare scripts (`4-compare.sh` + `diff_report.py`) and a `config/pipeline.config` template are **bundled with this skill** — no external repo needed, and no need to copy them into the project.
+
+## Where this skill operates
+
+This skill operates on **the user's current project directory** (e.g. a folder called `demo/`), not the skill's own install location. `4-compare.sh` resolves two paths independently:
+
+- `SCRIPT_DIR` — where the script and `diff_report.py` live (the skill's bundled `scripts/` folder). Used only to find the report helper.
+- `PROJECT_ROOT` — the user's project, resolved at runtime via `git rev-parse --show-toplevel`. Reads `manifests/` and `config/pipeline.config`, writes `reports/`, and runs all git operations here.
+
+**The only requirement: run the script from inside the user's project repo.** As long as the current directory is inside `demo/`, `PROJECT_ROOT` resolves to `demo/` — regardless of where the script file lives.
+
+```bash
+# from inside the user's project (e.g. demo/), invoke the bundled script by its full path:
+"<this-skill-base-dir>/scripts/4-compare.sh" org-vs-branch <org>
+```
+
+`<this-skill-base-dir>` is the skill's install directory (stated when the skill loads). If the project also has its own copy at `scripts/4-compare.sh`, `./scripts/4-compare.sh` works identically.
+
+This skill pairs with **[d360-deploy](https://github.com/everanngitmaker/d360-skill-deploy)**: when `3-deploy.sh` aborts on a real conflict it points here, to `4-compare.sh org-vs-branch`. Both skills run against the same project repo and share one `config/pipeline.config`.
 
 ## When to use which mode
 
